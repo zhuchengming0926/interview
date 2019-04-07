@@ -1,6 +1,6 @@
-[Java动态代理与CGLIB](http://www.importnew.com/22015.html)
+# 代理
 
-## 代理
+[Java动态代理与CGLIB](http://www.importnew.com/22015.html)
 
 我们常说的代理分为静态代理和动态代理。
 
