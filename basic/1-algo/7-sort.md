@@ -58,43 +58,35 @@ void bubble_sort(int a[], int n)
 > - 最好情况：每次划分选取的基准都是当前无序区的中值。如果每次划分过程产生的区间大小都为n/2，则快速排序法运行就快得多了。
 
 ```java
-public static void fastSort(int[] nums, int start, int end) {
-    if (start > end) {
-        return;
+    public void sort(int[] arr, int low, int high) {
+        int l = low;
+        int h = high;
+        int povit = arr[low];
+
+        while (l < h) {
+            while (l < h && arr[h] >= povit)
+                h--;
+            if (l < h) {
+                arr[l] = arr[h];
+                l++;
+            }
+
+            while (l < h && arr[l] <= povit)
+                l++;
+
+            if (l < h) {
+                arr[h] = arr[l];
+                h--;
+            }
+        }
+
+        arr[l] = povit;
+
+        System.out.print("l=" + (l + 1) + ";h=" + (h + 1) + ";povit=" + povit + "\n");
+        System.out.println(Arrays.toString(arr));
+        if (l - 1 > low) sort(arr, low, l - 1);
+        if (h + 1 < high) sort(arr, h + 1, high);
     }
-
-    if (end < 0 || start < 0 || end > nums.length - 1 || start > nums.length - 1) {
-        return;
-    }
-
-    int left = start, right = end;
-    int keyIndex = (left + right) / 2;
-
-    while (left < right) {
-        while (right > keyIndex && nums[right] > nums[keyIndex]) {
-            right--;
-        }
-
-        if (right > keyIndex) {
-            swap(nums, keyIndex, right);
-            keyIndex = right;
-        }
-
-        while (left < keyIndex && nums[left] < nums[keyIndex]) {
-            left++;
-        }
-
-        if (left < keyIndex) {
-            swap(nums, left, keyIndex);
-            keyIndex = left;
-        }
-        left++;
-    }
-
-    fastSort(nums, keyIndex + 1, end);
-    fastSort(nums, start, keyIndex - 1);
-
-}
 ```
 
 #### 快排的优化
