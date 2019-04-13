@@ -135,7 +135,7 @@ for item in range(ITEMS):
   - 如果只有一个sentinel进程，如果这个进程运行出错，或者是网络堵塞，那么将无法实现redis集群的主备切换;
   - 如果有多个sentinel，redis的客户端可以随意地连接任意一个sentinel来获得关于redis集群中的信息。
 
-### Redis Cluster
+### [Redis Cluster](https://redis.io/topics/cluster-tutorial)
 
 Redis Cluster 是一种服务器 `Sharding` 技术，3.0版本开始正式提供。
 
@@ -251,6 +251,9 @@ Redis 就会使用跳跃表来作为有序集合键的底层实现。
 ### 对象过期
 
 Redis回收过期对象的策略：定期删除+惰性删除
+
+  - **惰性删除**：当读/写一个已经过期的key时，会触发惰性删除策略，直接删除掉这个过期key
+  - **定期删除**：由于惰性删除策略无法保证冷数据被及时删掉，所以Redis会定期主动淘汰一批已过期的key
 
 ### 内存淘汰
 

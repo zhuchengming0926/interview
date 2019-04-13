@@ -86,7 +86,7 @@ JVM中的共划分为三个代：`新生代（Young Generation）`、`老年代�
 ## HotSpot 各版本永久代变化
 
   - 在Java 6中，方法区中包含的数据，除了JIT编译生成的代码存放在`native memory`的`CodeCache`区域，其他都存放在永久代；
-  - 在Java 7中，`Symbol`的存储从`PermGen`移动到了`native memory`，并且把静态变量从`instanceKlass`末尾（位于`PermGen`内）移动到了`java.lang.Class`对象的末尾（位于普通`Java heap`内）；
+  - 在Java 7中，`Symbol` 的存储从 `PermGen` 移动到了 `native memory` ，并且把静态变量从`instanceKlass`末尾（位于`PermGen`内）移动到了`java.lang.Class`对象的末尾（位于普通`Java heap`内）；
   - 在Java 8中，永久代被彻底移除，取而代之的是另一块与堆不相连的本地内存——元空间（`Metaspace`）,`‑XX:MaxPermSize` 参数失去了意义，取而代之的是`-XX:MaxMetaspaceSize`。
 
 ### [移除永久代](https://www.sczyh30.com/posts/Java/jvm-metaspace/)
