@@ -3,9 +3,9 @@
 ## 领域模型
 在 Dubbo 的核心领域模型中：
 
-  - Protocol 是服务域，它是 Invoker 暴露和引用的主功能入口，它负责 Invoker 的生命周期管理。
-  - Invoker 是实体域，它是 Dubbo 的核心模型，其它模型都向它靠扰，或转换成它，它代表一个可执行体，可向它发起 invoke 调用，它有可能是一个本地的实现，也可能是一个远程的实现，也可能一个集群实现。
-  - Invocation 是会话域，它持有调用过程中的变量，比如方法名，参数等。
+  - `Protocol` 是服务域，它是 Invoker 暴露和引用的主功能入口，它负责 Invoker 的生命周期管理。
+  - `Invoker` 是实体域，它是 Dubbo 的核心模型，其它模型都向它靠扰，或转换成它，它代表一个可执行体，可向它发起 invoke 调用，它有可能是一个本地的实现，也可能是一个远程的实现，也可能一个集群实现。
+  - `Invocation` 是会话域，它持有调用过程中的变量，比如方法名，参数等。
 
 ## 基本设计原则
 
@@ -18,224 +18,202 @@
 
 ![image](images/fce799af888ea1e2b757476b03d4ded7.png)
 
-## 面试题目
+## Dubbo 结构
 
-### 1、Dubbo是什么？
+  - 第一层：service 层，接口层，给服务提供者和消费者来实现的
+  - 第二层：config 层，配置层，主要是对 dubbo 进行各种配置的
+  - 第三层：proxy 层，服务代理层，无论是 consumer 还是 provider，dubbo 都会给你生成代理，代理之间进行网络通信
+  - 第四层：registry 层，服务注册层，负责服务的注册与发现
+  - 第五层：cluster 层，集群层，封装多个服务提供者的路由以及负载均衡，将多个实例组合成一个服务
+  - 第六层：monitor 层，监控层，对 rpc 接口的调用次数和调用时间进行监控
+  - 第七层：protocal 层，远程调用层，封装 rpc 调用
+  - 第八层：exchange 层，信息交换层，封装请求响应模式，同步转异步
+  - 第九层：transport 层，网络传输层，抽象 mina 和 netty 为统一接口
+  - 第十层：serialize 层，数据序列化层
 
-Dubbo是阿里巴巴开源的基于 Java 的高性能 RPC 分布式服务框架，现已成为 Apache 基金会孵化项目。
+## 工作流程
+  - 第一步：provider 向注册中心去注册
+  - 第二步：consumer 从注册中心订阅服务，注册中心会通知 consumer 注册好的服务
+  - 第三步：consumer 调用 provider
+  - 第四步：consumer 和 provider 都异步通知监控中心
 
-面试官问你如果这个都不清楚，那下面的就没必要问了。
+![image](images/075a4cbace1c6874c04ae34c6b91c7ad.png)
 
-> 官网：[http://dubbo.apache.org][1]  
+## 注册中心挂了可以继续通信吗？
 
-### 2、为什么要用Dubbo？
+可以，因为刚开始初始化的时候，消费者会将提供者的地址等信息拉取到 **本地缓存**，所以注册中心挂了可以继续通信。
 
-因为是阿里开源项目，国内很多互联网公司都在用，已经经过很多线上考验。内部使用了 Netty、Zookeeper，保证了高性能高可用性。
 
-使用 Dubbo 可以将核心业务抽取出来，作为独立的服务，逐渐形成稳定的服务中心，可用于提高业务复用灵活扩展，使前端应用能更快速的响应多变的市场需求。
+## Dubbo 支持哪些序列化协议？说一下 Hessian 的数据结构？PB 知道吗？为什么 PB 的效率是最高的？
 
-下面这张图可以很清楚的诠释，最重要的一点是，分布式架构可以承受更大规模的并发流量。
+### Dubbo 支持不同的通信协议
 
-![image](images/6ffde2284d44581ea768f3e5e207aecf.png)
+  - **dubbo 协议**：默认就是走 dubbo 协议，**单一长连接**，进行的是 NIO 异步通信，基于 hessian 作为序列化协议。使用的场景是：传输数据量小（每次请求在 100kb 以内），但是并发量很高。
+  - **rmi 协议**：走 Java 二进制序列化，**多个短连接**，适合消费者和提供者数量差不多的情况，适用于文件的传输，一般较少用。
+  - **hessian 协议**：走 hessian 序列化协议，**多个短连接**，适用于提供者数量比消费者数量还多的情况，适用于文件的传输，一般较少用。
+  - **http 协议**：走 json 序列化
+  - **webservice**：走 SOAP 文本序列化
 
-下面是 Dubbo 的服务治理图。
+### Dubbo 支持的序列化协议
 
-![image](images/748f1ed8da284532321731ee369dd90f.png)
+`dubbo` 支持 `hession` 、 Java 二进制序列化、`json`、`SOAP` 文本序列化多种序列化协议。但是 **`hessian` 是其默认的序列化协议**。
 
-### 3、Dubbo 和 Spring Cloud 有什么区别？
+### 为什么 PB 的效率是最高的？
 
-两个没关联，如果硬要说区别，有以下几点。
+其实 PB 之所以性能如此好，主要得益于两个：
+  - 它使用 `proto` 编译器，自动进行序列化和反序列化，速度非常快，应该比 XML 和 JSON 快上了 `20~100` 倍；
+  - 它的数据压缩效果好，就是说它序列化后的数据量体积小。因为体积小，传输起来带宽和速度上会有优化。
 
-1）通信方式不同
+## dubbo 负载均衡策略和集群容错策略都有哪些？动态代理策略呢？
 
-Dubbo 使用的是 RPC 通信，而 Spring Cloud 使用的是 HTTP RESTFul 方式。
+### dubbo 负载均衡策略
 
-2）组成部分不同
+#### random loadbalance
 
-组件 | Dubbo | Spring Cloud ---|---|--- 服务注册中心 | Zookeeper | Spring Cloud Netflix Eureka 服务监控 | Dubbo-monitor | Spring Boot Admin 断路器 | 不完善 | Spring Cloud Netflix Hystrix 服务网关 | 无 | Spring Cloud Netflix Gateway 分布式配置 | 无 | Spring Cloud Config 服务跟踪 | 无 | Spring Cloud Sleuth 消息总线 | 无 | Spring Cloud Bus 数据流 | 无 | Spring Cloud Stream 批量任务 | 无 | Spring Cloud Task ... | ... | ...
+默认情况下，dubbo 是 `random load balance` ，即 **随机** 调用实现负载均衡，可以对 `provider` 不同实例 **设置不同的权重**，会按照权重来负载均衡，权重越大分配流量越高，一般就用这个默认的就可以了。
 
-### 4、dubbo都支持什么协议，推荐用哪种？
+#### roundrobin loadbalance
 
-* dubbo://（推荐）
-* rmi://
-* hessian://
-* http://
-* webservice://
-* thrift://
-* memcached://
-* redis://
-* rest://
+这个的话默认就是均匀地将流量打到各个机器上去，但是如果各个机器的性能不一样，容易导致性能差的机器负载过高。所以此时需要调整权重，让性能差的机器承载权重小一些，流量少一些。
 
-### 5、Dubbo需要 Web 容器吗？
+#### leastactive loadbalance
 
-不需要，如果硬要用 Web 容器，只会增加复杂性，也浪费资源。
+这个就是自动感知一下，如果某个机器性能越差，那么接收的请求越少，越不活跃，此时就会给 **不活跃的性能差的机器更少的请求**。
 
-### 6、Dubbo内置了哪几种服务容器？
+#### consistanthash loadbalance
 
-* Spring Container
-* Jetty Container
-* Log4j Container
+一致性 Hash 算法，相同参数的请求一定分发到一个 `provider` 上去， `provider` 挂掉的时候，会基于虚拟节点均匀分配剩余的流量，抖动不会太大。**如果你需要的不是随机负载均衡**，是要一类请求都到一个节点，那就走这个一致性 `Hash` 策略。
 
-Dubbo 的服务容器只是一个简单的 Main 方法，并加载一个简单的 Spring 容器，用于暴露服务。
+### dubbo 集群容错策略
 
-### 7、Dubbo里面有哪几种节点角色？
+#### failover cluster 模式
 
-节点 | 角色说明 ---|--- Provider | 暴露服务的服务提供方 Consumer | 调用远程服务的服务消费方 Registry | 服务注册与发现的注册中心 Monitor | 统计服务的调用次数和调用时间的监控中心 Container | 服务运行容器
+失败自动切换，自动重试其他机器，默认就是这个，常见于读操作。（失败重试其它机器）
 
-### 8、画一画服务注册与发现的流程图
+#### failfast cluster模式
 
-![image](images/4140792fcdb08ad3b9128e75e73f0fa0.png)
+一次调用失败就立即失败，常见于写操作。（调用失败就立即失败）
 
-该图来自 Dubbo 官网，供你参考，如果你说你熟悉 Dubbo, 面试官经常会让你画这个图，记好了。
+#### failsafe cluster 模式
 
-### 9、Dubbo默认使用什么注册中心，还有别的选择吗？
+出现异常时忽略掉，常用于不重要的接口调用，比如记录日志。
 
-推荐使用 Zookeeper 作为注册中心，还有 Redis、Multicast、Simple 注册中心，但不推荐。
+#### failback cluster 模式
 
-### 10、Dubbo有哪几种配置方式？
+失败了后台自动记录请求，然后定时重发，比较适合于写消息队列这种。
 
-1）Spring 配置方式 2）Java API 配置方式
+#### forking cluster 模式
 
-### 11、Dubbo 核心的配置有哪些？
+**并行调用** 多个 `provider` ，只要一个成功就立即返回。
 
-我曾经面试就遇到过面试官让你写这些配置，我也是蒙逼。。
+#### broadcacst cluster
 
-配置 | 配置说明 ---|--- dubbo:service | 服务配置 dubbo:reference | 引用配置 dubbo:protocol | 协议配置 dubbo:application | 应用配置 dubbo:module | 模块配置 dubbo:registry | 注册中心配置 dubbo:monitor | 监控中心配置 dubbo:provider | 提供方配置 dubbo:consumer | 消费方配置 dubbo:method | 方法配置 dubbo:argument | 参数配置
+逐个调用所有的 `provider。`
 
-配置之间的关系见下图。
+### dubbo动态代理策略
 
-![image](images/bdef7d0527f38eaba6cef109c1252b72.png)
+默认使用 `javassist` 动态字节码生成，创建代理类。但是可以通过 spi 扩展机制配置自己的动态代理策略。
 
-配置之间的覆盖关系：
+## dubbo 的 spi 思想是什么？
 
-![image](images/926e7eb7506fba44118316cdf28ade6c.png)
+## 如何基于 Dubbo 进行服务治理、服务降级、失败重试以及超时重试？
 
-### 12、在 Provider 上可以配置的 Consumer 端的属性有哪些？
+### 服务治理
 
-1）timeout：方法调用超时 2）retries：失败重试次数，默认重试 2 次 3）loadbalance：负载均衡算法，默认随机 4）actives 消费者端，最大并发调用限制
+#### 1. 调用链路自动生成
 
-### 13、Dubbo启动时如果依赖的服务不可用会怎样？
+一个大型的分布式系统，或者说是用现在流行的微服务架构来说吧，**分布式系统由大量的服务组成**。那么这些服务之间互相是如何调用的？调用链路是啥？说实话，几乎到后面没人搞的清楚了，因为服务实在太多了，可能几百个甚至几千个服务。
 
-Dubbo 缺省会在启动时检查依赖的服务是否可用，不可用时会抛出异常，阻止 Spring 初始化完成，默认 check="true"，可以通过 check="false" 关闭检查。
+那就需要基于 dubbo 做的分布式系统中，对各个服务之间的调用自动记录下来，然后自动将 **各个服务之间的依赖关系和调用链路生成出来**，做成一张图，显示出来，大家才可以看到对吧。
 
-### 14、Dubbo推荐使用什么序列化框架，你知道的还有哪些？
+![image](images/c48a88cbce65d737293a41250ea58d72.png)
 
-推荐使用Hessian序列化，还有Duddo、FastJson、Java自带序列化。
+#### 2. 服务访问压力以及时长统计
 
-### 15、Dubbo默认使用的是什么通信框架，还有别的选择吗？
+需要自动统计 **各个接口和服务之间的调用次数以及访问延时**，而且要分成两个级别。
 
-Dubbo 默认使用 Netty 框架，也是推荐的选择，另外内容还集成有Mina、Grizzly。
+  - 一个级别是接口粒度，就是每个服务的每个接口每天被调用多少次，`TP50/TP90/TP99`，三个档次的请求延时分别是多少；
+  - 第二个级别是从源头入口开始，一个完整的请求链路经过几十个服务之后，完成一次请求，每天全链路走多少次，全链路请求延时的 `TP50/TP90/TP99`，分别是多少。
 
-### 16、Dubbo有哪几种集群容错方案，默认是哪种？
+这些东西都搞定了之后，后面才可以来看当前系统的压力主要在哪里，如何来扩容和优化啊。
 
-集群容错方案 | 说明 ---|--- Failover Cluster | 失败自动切换，自动重试其它服务器（默认） Failfast Cluster | 快速失败，立即报错，只发起一次调用 Failsafe Cluster | 失败安全，出现异常时，直接忽略 Failback Cluster | 失败自动恢复，记录失败请求，定时重发 Forking Cluster | 并行调用多个服务器，只要一个成功即返回 Broadcast Cluster | 广播逐个调用所有提供者，任意一个报错则报错
+#### 3. 其它
 
-### 17、Dubbo有哪几种负载均衡策略，默认是哪种？
+  - 服务分层（避免循环依赖）
+  - 调用链路失败监控和报警
+  - 服务鉴权
+  - 每个服务的可用性的监控（接口调用成功率？几个 9？99.99%，99.9%，99%）
 
-负载均衡策略 | 说明 ---|--- Random LoadBalance | 随机，按权重设置随机概率（默认） RoundRobin LoadBalance | 轮询，按公约后的权重设置轮询比率 LeastActive LoadBalance | 最少活跃调用数，相同活跃数的随机 ConsistentHash LoadBalance | 一致性 Hash，相同参数的请求总是发到同一提供者
+### 服务降级
 
-### 18、注册了多个同一样的服务，如果测试指定的某一个服务呢？
+比如说服务 A 调用服务 B，结果服务 B 挂掉了，服务 A 重试几次调用服务 B，还是不行，那么直接降级，走一个备用的逻辑，给用户返回响应。
 
-可以配置环境点对点直连，绕过注册中心，将以服务接口为单位，忽略注册中心的提供者列表。
+举个栗子，我们有接口 `HelloService`。`HelloServiceImpl` 有该接口的具体实现。
 
-### 19、Dubbo支持服务多协议吗？
+```java
+public interface HelloService {
+   void sayHello();
+}
 
-Dubbo 允许配置多协议，在不同服务上支持不同协议或者同一服务上同时支持多种协议。
+public class HelloServiceImpl implements HelloService {
+    public void sayHello() {
+        System.out.println("hello world......");
+    }
+}
+```
 
-### 20、当一个服务接口有多种实现时怎么做？
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans        http://www.springframework.org/schema/beans/spring-beans.xsd        http://code.alibabatech.com/schema/dubbo        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
 
-当一个接口有多种实现时，可以用 group 属性来分组，服务提供方和消费方都指定同一个 group 即可。
+    <dubbo:application name="dubbo-provider" />
+    <dubbo:registry address="zookeeper://127.0.0.1:2181" />
+    <dubbo:protocol name="dubbo" port="20880" />
+    <dubbo:service interface="com.zhss.service.HelloService" ref="helloServiceImpl" timeout="10000" />
+    <bean id="helloServiceImpl" class="com.zhss.service.HelloServiceImpl" />
 
-### 21、服务上线怎么兼容旧版本？
+</beans>
 
-可以用版本号（version）过渡，多个不同版本的服务注册到注册中心，版本号不同的服务相互间不引用。这个和服务分组的概念有一点类似。
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans        http://www.springframework.org/schema/beans/spring-beans.xsd        http://code.alibabatech.com/schema/dubbo        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
 
-### 22、Dubbo可以对结果进行缓存吗？
+    <dubbo:application name="dubbo-consumer"  />
 
-可以，Dubbo 提供了声明式缓存，用于加速热门数据的访问速度，以减少用户加缓存的工作量。
+    <dubbo:registry address="zookeeper://127.0.0.1:2181" />
 
-### 23、Dubbo服务之间的调用是阻塞的吗？
+    <dubbo:reference id="fooService" interface="com.test.service.FooService"  timeout="10000" check="false" mock="return null">
+    </dubbo:reference>
 
-默认是同步等待结果阻塞的，支持异步调用。
+</beans>
 
-Dubbo 是基于 NIO 的非阻塞实现并行调用，客户端不需要启动多线程即可完成并行调用多个远程服务，相对多线程开销较小，异步调用会返回一个 Future 对象。
+```
 
-异步调用流程图如下。
+我们调用接口失败的时候，可以通过 `mock` 统一返回 `null` 。
 
-![image](images/94e5727c24d42f77989bba6eb3aaa6fe.png)
+mock 的值也可以修改为 true，然后再跟接口同一个路径下实现一个 Mock 类，命名规则是 “接口名称+`Mock`” 后缀。然后在 Mock 类里实现自己的降级逻辑。
 
-### 24、Dubbo支持分布式事务吗？
+```java
+public class HelloServiceMock implements HelloService {
+    public void sayHello() {
+        // 降级逻辑
+    }
+}
+```
 
-目前暂时不支持，后续可能采用基于 JTA/XA 规范实现，如以图所示。
+### 失败重试和超时重试
 
-![image](images/1135ded14e8e9cca93e8dd8e099e8922.png)
+所谓失败重试，就是 `consumer` 调用 `provider` 要是失败了，比如抛异常了，此时应该是可以重试的，或者调用超时了也可以重试。配置如下：
 
-### 25、Dubbo telnet 命令能做什么？
+```xml
+<dubbo:reference id="xxxx" interface="xx" check="true" async="false" retries="3" timeout="2000"/>
+```
 
-dubbo 通过 telnet 命令来进行服务治理，具体使用看这篇文章《[dubbo服务调试管理实用命令][14]》。
 
-> telnet localhost 8090  
+## 参考链接
 
-### 26、Dubbo支持服务降级吗？
-
-Dubbo 2.2.0 以上版本支持。
-
-### 27、Dubbo如何优雅停机？
-
-Dubbo 是通过 JDK 的 ShutdownHook 来完成优雅停机的，所以如果使用 kill -9 PID 等强制关闭指令，是不会执行优雅停机的，只有通过 kill PID 时，才会执行。
-
-### 28、服务提供者能实现失效踢出是什么原理？
-
-服务失效踢出基于 Zookeeper 的临时节点原理。
-
-### 29、如何解决服务调用链过长的问题？
-
-Dubbo 可以使用 Pinpoint 和 Apache Skywalking(Incubator) 实现分布式服务追踪，当然还有其他很多方案。
-
-### 30、服务读写推荐的容错策略是怎样的？
-
-读操作建议使用 Failover 失败自动切换，默认重试两次其他服务器。
-
-写操作建议使用 Failfast 快速失败，发一次调用失败就立即报错。
-
-### 31、Dubbo必须依赖的包有哪些？
-
-Dubbo 必须依赖 JDK，其他为可选。
-
-### 32、Dubbo的管理控制台能做什么？
-
-管理控制台主要包含：路由规则，动态配置，服务降级，访问控制，权重调整，负载均衡，等管理功能。
-
-### 33、说说 Dubbo 服务暴露的过程。
-
-Dubbo 会在 Spring 实例化完 bean 之后，在刷新容器最后一步发布 ContextRefreshEvent 事件的时候，通知实现了 ApplicationListener 的 ServiceBean 类进行回调 onApplicationEvent 事件方法，Dubbo 会在这个方法中调用 ServiceBean 父类 ServiceConfig 的 export 方法，而该方法真正实现了服务的（异步或者非异步）发布。
-
-### 34、Dubbo 停止维护了吗？
-
-2014 年开始停止维护过几年，17 年开始重新维护，并进入了 Apache 项目。
-
-### 35、Dubbo 和 Dubbox 有什么区别？
-
-Dubbox 是继 Dubbo 停止维护后，当当网基于 Dubbo 做的一个扩展项目，如加了服务可 Restful 调用，更新了开源组件等。
-
-### 36、你还了解别的分布式框架吗？
-
-别的还有 Spring cloud、Facebook 的 Thrift、Twitter 的 Finagle 等。
-
-### 37、Dubbo 能集成 Spring Boot 吗？
-
-可以的，项目地址如下。
-
-> [https://github.com/apache/incubator-dubbo-spring-boot-project][15]  
-
-### 38、在使用过程中都遇到了些什么问题？
-
-Dubbo 的设计目的是为了满足高并发小数据量的 rpc 调用，在大数据量下的性能表现并不好，建议使用 rmi 或 http 协议。
-
-### 39、你读过 Dubbo 的源码吗？
-
-要了解 Dubbo 就必须看其源码，了解其原理，花点时间看下吧，网上也有很多教程，后续有时间我也会在公众号上分享 Dubbo 的源码。
-
-### 40、你觉得用 Dubbo 好还是 Spring Cloud 好？
-
-扩展性的问题，没有好坏，只有适合不适合，不过我好像更倾向于使用 Dubbo, Spring Cloud 版本升级太快，组件更新替换太频繁，配置太繁琐，还有很多我觉得是没有 Dubbo 顺手的地方……
+[advanced-java](https://github.com/doocs/advanced-java)
