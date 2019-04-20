@@ -1,4 +1,4 @@
-# []线程中断](https://javadoop.com/post/AbstractQueuedSynchronizer-2/)
+# [线程中断](https://javadoop.com/post/AbstractQueuedSynchronizer-2/)
 
 中断不是类似 `linux` 里面的命令 `kill -9 pid`，不是说我们中断某个线程，这个线程就停止运行了。**中断代表线程状态，每个线程都关联了一个中断状态，是一个 true 或 false 的 boolean 值，初始值为 false**。
 
