@@ -1,6 +1,6 @@
 {
-  "title": "title",
-  "author": "",
+  "title": "Java / Android 笔试、面试 知识整理",
+  "author": "HadYang",
   "plugins": [
     "-lunr",
     "-search",
@@ -41,7 +41,7 @@
       }]
     },
     "editlink": {
-      "base": "https://github.com/riskers/gitbook-template/blob/master",
+      "base": "https://github.com/hadyang/interview/tree/master",
       "label": "Edit",
       "multilingual": false
     },
@@ -62,14 +62,6 @@
       "markdown": true,
       "update_label": "此页面修订于：",
       "update_format": "YYYY-MM-DD HH:mm:ss"
-    },
-    "donate": {
-      "wechat": "https://ws1.sinaimg.cn/large/8e495e65ly1fz0myv9povj20u00u0wfr.jpg",
-      "alipay": "https://ws1.sinaimg.cn/large/8e495e65ly1fz0myv9emlj20p011idib.jpg",
-      "title": "",
-      "button": "赏",
-      "alipayText": "支付宝打赏",
-      "wechatText": "微信打赏"
     }
   }
 }
