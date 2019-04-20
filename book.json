@@ -12,7 +12,6 @@
     "ga",
     "-highlight",
     "prism",
-    "bibtex-indexed-cite",
     "anchor-navigation-ex",
     "page-footer-ex",
     "splitter",
@@ -63,9 +62,6 @@
       "markdown": true,
       "update_label": "此页面修订于：",
       "update_format": "YYYY-MM-DD HH:mm:ss"
-    },
-    "bibtex-indexed-cite": {
-      "path": "/"
     },
     "donate": {
       "wechat": "https://ws1.sinaimg.cn/large/8e495e65ly1fz0myv9povj20u00u0wfr.jpg",
