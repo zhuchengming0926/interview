@@ -36,7 +36,7 @@
     - [Kafka](./architecture/distributed/7-kafka.md)
     - [远程调用](./architecture/distributed/8-rpc.md)
     - [Dubbo](./architecture/distributed/9-dubbo.md)
-- [计算机基础](./basic)
+- [计算机基础](./basic/README.md)
  - [算法](./basic/1-algo/README.md)
     - [基本算法](./basic/1-algo/1-algo.md)
     - [树](./basic/1-algo/1-tree.md)
