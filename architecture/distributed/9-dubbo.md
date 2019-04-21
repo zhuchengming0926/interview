@@ -116,6 +116,18 @@
 
 ## dubbo 的 spi 思想是什么？
 
+`spi` ，简单来说，就是 `service provider interface`，说白了是什么意思呢，比如你有个接口，现在这个接口有 3 个实现类，那么在系统运行的时候对这个接口到底选择哪个实现类呢？这就需要 `spi` 了，需要根据指定的配置或者是默认的配置，去找到对应的实现类加载进来，然后用这个实现类的实例对象。
+
+`dubbo` 也用了 `spi` 思想，不过没有用 `jdk` 的 `spi` 机制，是自己实现的一套 `spi` 机制。
+
+```
+Protocol protocol = ExtensionLoader.getExtensionLoader(Protocol.class).getAdaptiveExtension();
+```
+
+`Protocol` 接口，在系统运行的时候， `dubbo` 会判断一下应该选用这个 `Protocol` 接口的哪个实现类来实例化对象来使用。
+
+它会去找一个你配置的 `Protocol` ，将你配置的 `Protocol` 实现类，加载到 `jvm` 中来，然后实例化对象，就用你的那个 `Protocol` 实现类就可以了。
+
 ## 如何基于 Dubbo 进行服务治理、服务降级、失败重试以及超时重试？
 
 ### 服务治理
