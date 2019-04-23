@@ -2,6 +2,8 @@
 
 ## 数据存储
 
+> MySQL 存储格式可通过 SQL：`SHOW TABLE STATUS IN {dbName}` 查看
+
 与现有的大多数存储引擎一样，InnoDB 使用页作为磁盘管理的最小单位；数据在 InnoDB 存储引擎中都是按行存储的，每个 `16KB` 大小的页中可以存放 `2-200` 行的记录。
 
 当 InnoDB 存储数据时，它可以使用不同的行格式进行存储；MySQL 5.7 版本支持以下格式的行存储方式：
@@ -282,7 +284,7 @@ ISO 和 ANIS SQL 标准制定了四种事务隔离级别，而 InnoDB 遵循了 
 
 MySQL 中默认的事务隔离级别就是 `REPEATABLE READ`，但是它通过 Next-Key 锁也能够在某种程度上解决幻读的问题。
 
-![Transaction-Isolation-Matrix][images/15a2370c552e932907f8b2d3587171ef.png]
+![image](images/15a2370c552e932907f8b2d3587171ef.png)
 
 接下来，我们将数据库中创建如下的表并通过个例子来展示在不同的事务隔离级别之下，会发生什么样的问题：
 
@@ -299,7 +301,7 @@ MySQL 中默认的事务隔离级别就是 `REPEATABLE READ`，但是它通过 N
 
 当事务的隔离级别为 `READ UNCOMMITED` 时，我们在 `SESSION 2` 中插入的**未提交**数据在 `SESSION 1` 中是可以访问的。
 
-![Read-Uncommited-Dirty-Read][images/e4696fae4a417bdd70dd04f0786647ed.png]
+![image](images/e4696fae4a417bdd70dd04f0786647ed.png)
 
 ###  不可重复读
 
@@ -307,7 +309,7 @@ MySQL 中默认的事务隔离级别就是 `REPEATABLE READ`，但是它通过 N
 
 当事务的隔离级别为 `READ COMMITED` 时，虽然解决了脏读的问题，但是如果在 `SESSION 1` 先查询了**一行**数据，在这之后 `SESSION 2` 中修改了同一行数据并且提交了修改，在这时，如果 `SESSION 1` 中再次使用相同的查询语句，就会发现两次查询的结果不一样。
 
-![Read-Commited-Non-Repeatable-Read][images/d2d41261df71879fab0eb54771688d78.png]
+![image](images/d2d41261df71879fab0eb54771688d78.png)
 
 不可重复读的原因就是，在 `READ COMMITED` 的隔离级别下，存储引擎不会在查询记录时添加行锁，锁定 `id = 3` 这条记录。
 
@@ -317,13 +319,13 @@ MySQL 中默认的事务隔离级别就是 `REPEATABLE READ`，但是它通过 N
 
 重新开启了两个会话 `SESSION 1` 和 `SESSION 2`，在 `SESSION 1` 中我们查询全表的信息，没有得到任何记录；在 `SESSION 2` 中向表中插入一条数据并提交；由于 `REPEATABLE READ` 的原因，再次查询全表的数据时，我们获得到的仍然是空集，但是在向表中插入同样的数据却出现了错误。
 
-![Repeatable-Read-Phantom-Read][images/b356bfdde7d52c6993a697c4529d2f6b.png]
+![image](images/b356bfdde7d52c6993a697c4529d2f6b.png)
 
 这种现象在数据库中就被称作幻读，虽然我们使用查询语句得到了一个空的集合，但是插入数据时却得到了错误，好像之前的查询是幻觉一样。
 
 在标准的事务隔离级别中，幻读是由更高的隔离级别 `SERIALIZABLE` 解决的，但是它也可以通过 MySQL 提供的 `Next-Key` 锁解决：
 
-![Repeatable-with-Next-Key-Lock][images/8d3094a3893ae4d1806dfcb3a93b7dff.png]
+![image](images/8d3094a3893ae4d1806dfcb3a93b7dff.png)
 
 `REPEATABLE READ` 和 `READ UNCOMMITED` 其实是矛盾的，如果保证了前者就看不到已经提交的事务，如果保证了后者，就会导致两次查询的结果不同，MySQL 为我们提供了一种折中的方式，能够在 `REPEATABLE READ` 模式下加锁访问已经提交的数据，其本身并不能解决幻读的问题，而是通过文章前面提到的 `Next-Key` 锁来解决。
 
