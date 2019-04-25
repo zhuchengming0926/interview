@@ -5,6 +5,7 @@
 ## 数组
 
 	1. [搜索二维矩阵 II](./search-a-2d-matrix.md)
+	2. [旋转数组的最小数字](./find-minimum-in-rotated-sorted-array.md)
 
 ## 链表
 
@@ -21,3 +22,12 @@
 ## 树
 
 	1. [重建二叉树](./reConstructBinaryTree.md)
+
+## 递归和循环
+
+	1. [斐波纳切数列](./fibonacci.md)
+	2. [数值的整数次方](./power.md)
+
+## 位运算
+
+	1. [二进制中1的个数](./number-of-one.md)

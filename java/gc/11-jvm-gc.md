@@ -118,17 +118,23 @@ JVM中的共划分为三个代：`新生代（Young Generation）`、`老年代�
 
 ### Scavenge GC
 
-  一般情况下，当新对象生成，并且在Eden申请空间失败时，就会触发Scavenge GC，对Eden区域进行GC，清除非存活对象，并且把尚且存活的对象移动到Survivor区，然后整理Survivor的两个区。这种方式的GC是对新生代的Eden区进行，不会影响到老年代。因为大部分对象都是从Eden区开始的，同时Eden区不会分配的很大，所以Eden区的GC会频繁进行。
+一般情况下，当新对象生成，并且在 `Eden` 申请空间失败时，就会触发 `Scavenge GC`，对 `Eden` 区域进行 `GC` ，清除非存活对象，并且把尚且存活的对象移动到 `Survivor` 区，然后整理 `Survivor` 的两个区。这种方式的 GC是对新生代的 Eden 区进行，不会影响到老年代。因为大部分对象都是从 Eden 区开始的，同时 Eden 区不会分配的很大，所以 Eden 区的 GC 会频繁进行。
 
 ### Full GC
 
-对整个堆进行整理，包括Young、Tenured和Perm。Full GC因为需要对整个对进行回收，所以比Scavenge GC要慢，因此应该尽可能减少Full GC的次数。在对JVM调优的过程中，很大一部分工作就是对于FullGC的调节。有如下原因可能导致Full GC：
+对整个堆进行整理，包括 `Young` 、 `Tenured` 和 `Perm` 。Full GC因为需要对整个对进行回收，所以比 `Scavenge GC` 要慢，因此应该尽可能减少 `Full GC` 的次数。在对 JVM 调优的过程中，很大一部分工作就是对于 FullGC 的调节。有如下原因可能导致Full GC：
 
   - 老年代（Tenured）被写满
-
   - 永久代（Perm）被写满
-
   - System.gc()被显示调用
+
+### 堆外内存 GC
+
+[Native Memory Tracking](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/tooldescr007.html)
+
+`DirectBuffer` 的引用是直接分配在堆得 `Old` 区的，因此其回收时机是在 `FullGC` 时。因此，需要避免频繁的分配 `DirectBuffer` ，这样很容易导致 `Native Memory` 溢出。
+
+`DirectByteBuffer` 申请的直接内存，不再GC范围之内，无法自动回收。JDK提供了一种机制，可以为堆内存对象注册一个钩子函数(其实就是实现 `Runnable` 接口的子类)，当堆内存对象被GC回收的时候，会回调run方法，我们可以在这个方法中执行释放 `DirectByteBuffer` 引用的直接内存，即在run方法中调用 `Unsafe` 的 `freeMemory` 方法。注册是通过`sun.misc.Cleaner`类来实现的。
 
 ## 垃圾收集器
 
