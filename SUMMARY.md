@@ -138,4 +138,6 @@
 	- 16\. [反转链表](./剑指Offer/revert-link.md)
 	- 17\. [合并两个排序的链表](./剑指Offer/merge-sort-link.md)
 	- 18\. [树的子结构](./剑指Offer/HasSubtree.md)
+	- 19\. [二叉树的镜像](./剑指Offer/mirror-tree.md)
+	- 20\. [顺时针打印矩阵](./剑指Offer/PrintMatrix.md)
 	- 30\. [最小的K个数]()
