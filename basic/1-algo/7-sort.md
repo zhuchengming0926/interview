@@ -166,46 +166,49 @@ void selection_sort(int arr[], int len) {
 
 堆排序利用了大根堆（或小根堆）堆顶记录的关键字最大（或最小）这一特征，使得在当前无序区中选取最大（或最小）关键字的记录变得简单。
 
-  1. 先将初始文件R[1..n]建成一个大根堆，此堆为初始的无序区
-  2. 再将关键字最大的记录R[1]（即堆顶）和无序区的最后一个记录R[n]交换，由此得到新的无序区R[1..n-1]和有序区R[n]，且满足R[1..n-1].keys≤R[n].key
-  3. 由于交换后新的根R[1]可能违反堆性质，故应将当前无序区R[1..n-1]调整为堆。然后再次将R[1..n-1]中关键字最大的记录R[1]和该区间的最后一个记录R[n-1]交换，由此得到新的无序区R[1..n-2]和有序区R[n-1..n]，且仍满足关系R[1..n-2].keys≤R[n-1..n].keys，同样要将R[1..n-2]调整为堆。
-  4. 直到无序区只有一个元素为止。
-
+  1. 将数组分为有序区和无序区，在无序区中建立最大堆
+  2. 将堆顶的数据与无序区末尾的数据交换
+  3. 从后往前，直到所有数据排序完成
 
 ```Java
-static void max_heap(int[] num, int start, int end) {
-    int dad = start;
-    int son = dad * 2 + 1;
+public void heapSort(int[] nums) {
+    for (int i = nums.length - 1; i >= 0; i--) {
+        maxHeap(nums, 0, i);
 
-    while (son < end) {
-        if (son + 1 < end && num[son] < num[son + 1])
-            son++;
+        swap(nums, 0, i);
+    }
+}
 
-        if (num[dad] > num[son])
-            return;
-        else {
-            num[dad] ^= num[son];
-            num[son] ^= num[dad];
-            num[dad] ^= num[son];
+public void maxHeap(int[] heap, int start, int end) {
+    if (start == end) {
+        return;
+    }
 
-            dad = son;
-            son = dad * 2 + 1;
+    int parent = start;
+    int childLeft = start * 2 + 1;
+    int childRight = childLeft + 1;
+
+    if (childLeft <= end) {
+        maxHeap(heap, childLeft, end);
+
+        if (heap[childLeft] > heap[parent]) {
+            swap(heap, parent, childLeft);
+        }
+    }
+
+    if (childRight <= end) {
+        maxHeap(heap, childRight, end);
+
+        if (heap[childRight] > heap[parent]) {
+            swap(heap, parent, childRight);
         }
     }
 }
 
-static void heap_sort(int[] num) {
-    for (int i = num.length / 2 - 1; i >= 0; --i) {
-        max_heap(num, i, num.length);
-    }
-
-    for (int i = num.length - 1; i >= 0; --i) {
-        num[i] ^= num[0];
-        num[0] ^= num[i];
-        num[i] ^= num[0];
-
-        max_heap(num, 0, i);
-    }
+private void swap(int[] nums, int a, int b) {
+    int t = nums[a];
+    nums[a] = nums[b];
+    nums[b] = t;
 }
 ```
 
