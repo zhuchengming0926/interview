@@ -4,7 +4,7 @@
 
 ## 数组
 
-- 3\. [搜索二维矩阵](./search-a-2d-matrix.md)
+- 3\. [搜索二维矩阵](./剑指Offer/search-a-2d-matrix.md)
 - 8\. [旋转数组的最小数字](./find-minimum-in-rotated-sorted-array.md)
 - 14\. [调整数组顺序使奇数位于偶数前面](./reOrderArray.md)
 - 30\. [最小的K个数]()
