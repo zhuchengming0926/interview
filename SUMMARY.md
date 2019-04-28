@@ -147,4 +147,7 @@
 	- 25\. [二叉树中和为某一值的路径](./剑指Offer/FindPath.md)
 	- 26\. [复杂链表的复制](./剑指Offer/CloneLink.md)
 	- 27\. [二叉搜索树与双向链表](./剑指Offer/BST-Link-Convert.md)
-	- 30\. [最小的K个数]()
+	- 28\. [字符串的排列](./剑指Offer/Permutation.md)
+	- 29\. [数组中出现次数超过一半的数字](./剑指Offer/MoreThanHalfNum.md)
+	- 30\. [最小的K个数](./剑指Offer/GetLeastNumbers.md)
+	- 31\. [连续子数组的最大和](./剑指Offer/FindGreatestSumOfSubArray.md)

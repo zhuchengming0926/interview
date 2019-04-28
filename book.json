@@ -17,7 +17,8 @@
     "splitter",
     "todo",
     "copy-code-button",
-    "expandable-chapters-small"
+    "expandable-chapters-small",
+    "mathjax"
   ],
   "pluginsConfig": {
     "search-pro": {
@@ -61,6 +62,9 @@
       "markdown": true,
       "update_label": "此页面修订于：",
       "update_format": "YYYY-MM-DD HH:mm:ss"
+    },
+    "mathjax":{
+      "forceSVG": true
     }
   }
 }
