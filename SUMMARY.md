@@ -151,3 +151,4 @@
 	- 29\. [数组中出现次数超过一半的数字](./剑指Offer/MoreThanHalfNum.md)
 	- 30\. [最小的K个数](./剑指Offer/GetLeastNumbers.md)
 	- 31\. [连续子数组的最大和](./剑指Offer/FindGreatestSumOfSubArray.md)
+	- 32\. [整数中1出现的次数（从1到n整数中1出现的次数）](./剑指Offer/NumberOf1Between1AndN.md)
