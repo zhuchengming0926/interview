@@ -152,3 +152,4 @@
 	- 30\. [最小的K个数](./剑指Offer/GetLeastNumbers.md)
 	- 31\. [连续子数组的最大和](./剑指Offer/FindGreatestSumOfSubArray.md)
 	- 32\. [整数中1出现的次数（从1到n整数中1出现的次数）](./剑指Offer/NumberOf1Between1AndN.md)
+	- 33\. [把数组排成最小的数](./剑指Offer/PrintMinNumber.md)
