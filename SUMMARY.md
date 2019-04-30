@@ -154,4 +154,4 @@
 	- 32\. [整数中1出现的次数（从1到n整数中1出现的次数）](./剑指Offer/NumberOf1Between1AndN.md)
 	- 33\. [把数组排成最小的数](./剑指Offer/PrintMinNumber.md)
 	- 34\. [丑数](./剑指Offer/GetUglyNumber.md)
-	- 35\. [丑数](./剑指Offer/FirstNotRepeatingChar.md)
+	- 35\. [第一个只出现一次的字符](./剑指Offer/FirstNotRepeatingChar.md)
