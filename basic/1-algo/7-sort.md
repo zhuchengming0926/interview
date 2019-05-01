@@ -219,45 +219,40 @@ private void swap(int[] nums, int a, int b) {
   - Conquer：递归的解决俩个规模为n/2的子问题；
   - Combine：合并俩个已排序的子序列。
 
- 性能：时间复杂度总是为O(NlogN)，空间复杂度也总为为O(N)，算法与初始序列无关，排序是稳定的。
+性能：时间复杂度总是为O(NlogN)，空间复杂度也总为为O(N)，算法与初始序列无关，排序是稳定的。
 
-```C
-void mergeSort(int arr[], int len) {
-    int* a = arr;
-    int* b = (int*) malloc(len * sizeof(int));
-
-    for (int size = 1; size < len; size += size) {
-        for (int start = 0; start < len; start += size + size) {
-            int k = start;
-            int left = start, right = min(left + size + size, len), mid = min(left + size, len);
-
-            int start1 = left, end1 = mid;
-            int start2 = mid, end2 = right;
-
-            while (start1 < end1 && start2 < end2) {
-                b[k++] = a[start1] > a[start2] ? a[start2++] : a[start1++];
-            }
-
-            while (start1 < end1) {
-                b[k++] = a[start1++];
-            }
-            while (start2 < end2) {
-                b[k++] = a[start2++];
-            }
-        }
-        int* temp = a;
-        a = b;
-        b = temp;
+```
+public void mergeSort(int[] array, int start, int end, int[] temp) {
+    if (start >= end) {
+        return;
     }
 
-    if (a != arr) {
-        for (int i = 0; i < len; ++i) {
-            b[i] = a[i];
+    int mid = (start + end) / 2;
+
+    mergeSort(array, start, mid, temp);
+    mergeSort(array, mid + 1, end, temp);
+
+    int f = start, s = mid + 1;
+    int t = 0;
+    while (f <= mid && s <= end) {
+        if (array[f] < array[s]) {
+            temp[t++] = array[f++];
+        } else {
+            temp[t++] = array[s++];
         }
-        b = a;
     }
 
-    free(b);
+    while (f <= mid) {
+        temp[t++] = array[f++];
+    }
+
+    while (s <= end) {
+        temp[t++] = array[s++];
+    }
+
+    for (int i = 0, j = start; i < t; i++) {
+        array[j++] = temp[i];
+    }
 }
 ```
 

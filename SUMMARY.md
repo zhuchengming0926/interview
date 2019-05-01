@@ -155,3 +155,5 @@
 	- 33\. [把数组排成最小的数](./剑指Offer/PrintMinNumber.md)
 	- 34\. [丑数](./剑指Offer/GetUglyNumber.md)
 	- 35\. [第一个只出现一次的字符](./剑指Offer/FirstNotRepeatingChar.md)
+	- 36\. [数组中的逆序对](./剑指Offer/InversePairs.md)
+	- 37\. [两个链表的第一个公共结点](./剑指Offer/FindFirstCommonNode.md)
