@@ -157,3 +157,8 @@
 	- 35\. [第一个只出现一次的字符](./剑指Offer/FirstNotRepeatingChar.md)
 	- 36\. [数组中的逆序对](./剑指Offer/InversePairs.md)
 	- 37\. [两个链表的第一个公共结点](./剑指Offer/FindFirstCommonNode.md)
+	- 38\. [数字在排序数组中出现的次数](./剑指Offer/GetNumberOfK.md)
+	- 39\. [二叉树的深度](./剑指Offer/TreeDepth.md)
+	- 40\. [数组中只出现一次的数字](./剑指Offer/FindNumsAppearOnce.md)
+	- 41\. [和为S的两个数字](./剑指Offer/FindNumbersWithSum.md)
+	- 42\. [和为S的连续正数序列](./剑指Offer/FindContinuousSequence.md)
