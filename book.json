@@ -10,15 +10,15 @@
     "github-buttons",
     "editlink",
     "ga",
-    "-highlight",
     "prism",
+    "-highlight",
     "anchor-navigation-ex",
     "page-footer-ex",
     "splitter",
     "todo",
     "copy-code-button",
     "expandable-chapters-small",
-    "mathjax"
+    "mathjax@https://github.com/OrgVue/gitbook-plugin-mathjax.git"
   ],
   "pluginsConfig": {
     "search-pro": {
