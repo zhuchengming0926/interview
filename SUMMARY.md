@@ -132,7 +132,7 @@
 	- [二进制中1的个数](offer/number-of-one.md)
 	- [数值的整数次方](offer/power.md)
 	- [打印最大的 n 位数](offer/printn.md)
-	- [在O(1)的时间复杂度下删除节点](offer/o1DeleteNode.md)
+	- [在O(1)的时间复杂度下删除节点](offer/O1DeleteNode.md)
 	- [调整数组顺序使奇数位于偶数前面](offer/reOrderArray.md)
 	- [链表中倒数第k个结点](offer/FindKthToTail.md)
 	- [反转链表](offer/revert-link.md)
