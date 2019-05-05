@@ -12,8 +12,8 @@
 
 $$
 max(f(i))=\begin{cases}
-num[i] & i=0 || f(i)<0\\
-num[i]+f(i) & i\ne0 && f(i)>0
+num[i] & i=0 or f(i)<0\\
+num[i]+f(i) & i\ne0 and f(i)>0
 \end{cases}
 $$
 
