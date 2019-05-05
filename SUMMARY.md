@@ -151,7 +151,7 @@
 	- [数组中出现次数超过一半的数字](offer/MoreThanHalfNum.md)
 	- [最小的K个数](offer/GetLeastNumbers.md)
 	- [连续子数组的最大和](offer/FindGreatestSumOfSubArray.md)
-	- [整数中1出现的次数（从1到n整数中1出现的次数）](offer/NumberOf1Between1AndN.md)
+	- [从1到n整数中1出现的次数](offer/NumberOf1Between1AndN.md)
 	- [把数组排成最小的数](offer/PrintMinNumber.md)
 	- [丑数](offer/GetUglyNumber.md)
 	- [第一个只出现一次的字符](offer/FirstNotRepeatingChar.md)
