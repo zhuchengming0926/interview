@@ -63,7 +63,7 @@ Java反射机制可以让我们在编译期\(Compile Time\)之外的运行期\(R
 
 获取方法的泛型参数：
 
-```Java
+```
 method = Myclass.class.getMethod("setStringList", List.class);
 
 Type[] genericParameterTypes = method.getGenericParameterTypes();
@@ -82,7 +82,7 @@ for(Type genericParameterType : genericParameterTypes){
 
 动态代理：
 
-```Java
+```
 //Main.java
 public static void main(String[] args) {
     HelloWorld helloWorld=new HelloWorldImpl();
@@ -111,7 +111,7 @@ public Object invoke(Object proxy, Method method, Object[] args) throws Throwabl
 
 通过反射获取方法注解的参数：
 
-```Java
+```
 Class aClass = TheClass.class;
 Annotation[] annotations = aClass.getAnnotations();
 
@@ -142,7 +142,7 @@ for(Annotation annotation : annotations){
 
 ### 非静态内部类能定义静态方法吗？
 
-```Java
+```
 public class OuterClass{
     private static float f = 1.0f;
 
@@ -180,7 +180,7 @@ public class OuterClass{
 
 folat类型的还有double类型的，**这些小数类型在趋近于0的时候直接等于0的可能性很小，一般都是无限趋近于0，因此不能用==来判断**。应该用`|x-0|<err`来判断，这里`|x-0|`表示绝对值，`err`表示限定误差。
 
-```Java
+```
 //用程序表示就是
 
 fabs(x) < 0.00001f

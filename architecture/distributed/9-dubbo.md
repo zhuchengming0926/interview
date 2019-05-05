@@ -162,7 +162,7 @@ Protocol protocol = ExtensionLoader.getExtensionLoader(Protocol.class).getAdapti
 
 举个栗子，我们有接口 `HelloService`。`HelloServiceImpl` 有该接口的具体实现。
 
-```java
+```
 public interface HelloService {
    void sayHello();
 }
@@ -209,7 +209,7 @@ public class HelloServiceImpl implements HelloService {
 
 mock 的值也可以修改为 true，然后再跟接口同一个路径下实现一个 Mock 类，命名规则是 “接口名称+`Mock`” 后缀。然后在 Mock 类里实现自己的降级逻辑。
 
-```java
+```
 public class HelloServiceMock implements HelloService {
     public void sayHello() {
         // 降级逻辑

@@ -18,7 +18,7 @@
 
 因为跳跃列表中的元素可以在多个列表中，所以每个元素可以有多于一个指针。跳跃列表的插入和删除的实现与普通的链表操作类似，但高层元素必须在进行多个链表中进行插入或删除。
 
-```java
+```
 package io.github.hadyang.leetcode.algo;
 
 import lombok.Getter;

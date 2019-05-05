@@ -4,7 +4,7 @@
 
 关于中断状态，我们需要重点关注 `Thread` 类中的以下几个方法：
 
-```java
+```
 // Thread 类中的实例方法，持有线程实例引用即可检测线程中断状态
 public boolean isInterrupted() {}
 
@@ -19,7 +19,7 @@ public void interrupt() {}
 
 我们说中断一个线程，其实就是设置了线程的 `interrupted status` 为 `true`，至于说被中断的线程怎么处理这个状态，那是那个线程自己的事。如以下代码：
 
-```java
+```
 while (!Thread.interrupted()) {
    doWork();
    System.out.println("我做完一件事了，准备做下一件，如果没有其他线程中断我的话");
@@ -57,7 +57,7 @@ while (!Thread.interrupted()) {
 一旦中断发生，我们接收到了这个信息，然后怎么去处理中断呢？本小节将简单分析这个问题。
 
 我们经常会这么写代码：
-```java
+```
 try {
     Thread.sleep(10000);
 } catch (InterruptedException e) {
@@ -70,7 +70,7 @@ try {
 
 AQS 的做法很值得我们借鉴，我们知道 `ReentrantLock` 有两种 `lock` 方法：
 
-```java
+```
 public void lock() {
     sync.lock();
 }
@@ -82,7 +82,7 @@ public void lockInterruptibly() throws InterruptedException {
 
 前面我们提到过，`lock()` 方法不响应中断。如果 `thread1` 调用了 `lock()` 方法，过了很久还没抢到锁，这个时候 `thread2` 对其进行了中断，`thread1` 是不响应这个请求的，它会继续抢锁，当然它不会把“被中断”这个信息扔掉。我们可以看以下代码：
 
-```java
+```
 public final void acquire(int arg) {
     if (!tryAcquire(arg) &&
         acquireQueued(addWaiter(Node.EXCLUSIVE), arg))
@@ -95,7 +95,7 @@ public final void acquire(int arg) {
 
 在并发包中，有非常多的这种处理中断的例子，提供两个方法，分别为响应中断和不响应中断，对于不响应中断的方法，记录中断而不是丢失这个信息。如 `Condition` 中的两个方法就是这样的：
 
-```java
+```
 void await() throws InterruptedException;
 void awaitUninterruptibly();
 ```

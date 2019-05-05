@@ -10,7 +10,7 @@
 
 三者的关系可以总结为如下伪代码：
 
-```Java
+```
 public boolean dispatchTouchEvent(MotionEvent ev) {
     boolean consume = false;
     if (onInterceptTouchEvent(ev)) {

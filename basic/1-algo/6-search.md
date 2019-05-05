@@ -16,7 +16,7 @@
 - **可以借助二叉判定树求得折半查找的平均查找长度**：`log2(n+1)-1`。
 - 折半查找在失败时所需比较的关键字个数不超过判定树的深度，n个元素的判定树的深度和n个元素的完全二叉树的深度相同`log2(n)+1`。
 
-```Java
+```
 public int binarySearchStandard(int[] num, int target){
     int start = 0;
     int end = num.length - 1;

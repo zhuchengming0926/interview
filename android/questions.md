@@ -162,7 +162,7 @@ ART缺点：
 
 Android 6.0 动态权限，这里以拨打电话的权限为例，首先需要在Manifest里添加`android.permission.CALL_PHONE`权限。
 
-```Java
+```
 int checkCallPhonePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE);
     if (checkCallPhonePermission != PackageManager.PERMISSION_GRANTED) {
         ActivityCompat.requestPermissions(
@@ -173,7 +173,7 @@ int checkCallPhonePermission = ContextCompat.checkSelfPermission(this, Manifest.
 
 在获取权限后，可以重写Activity.onRequestPermissionsResult方法来进行回调。
 
-```Java
+```
 @Override
 public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                        @NonNull int[] grantResults) {
@@ -328,7 +328,7 @@ Removecallback 必须是同一个Handler才能移除。
 
 ### Toast 如果会短时间内频繁显示怎么优化？
 
-```Java
+```
 public void update(String msg){
   toast.setText(msg);
   toast.show();
@@ -347,7 +347,7 @@ public void update(String msg){
 
 主要是通过 `getRunningAppProcesses()` 方法来实现。
 
-```Java
+```
 ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
 for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {

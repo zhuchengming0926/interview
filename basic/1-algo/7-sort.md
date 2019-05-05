@@ -57,7 +57,7 @@ void bubble_sort(int a[], int n)
 > - 最坏情况：时间复杂度为`O(n^2)`。因为最坏情况发生在每次划分过程产生的两个区间分别包含`n-1`个元素和`1`个元素的时候。
 > - 最好情况：每次划分选取的基准都是当前无序区的中值。如果每次划分过程产生的区间大小都为n/2，则快速排序法运行就快得多了。
 
-```java
+```
     public void sort(int[] arr, int low, int high) {
         int l = low;
         int h = high;
@@ -170,7 +170,7 @@ void selection_sort(int arr[], int len) {
   2. 将堆顶的数据与无序区末尾的数据交换
   3. 从后往前，直到所有数据排序完成
 
-```Java
+```
 public void heapSort(int[] nums) {
     for (int i = nums.length - 1; i >= 0; i--) {
         maxHeap(nums, 0, i);

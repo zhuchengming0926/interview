@@ -32,7 +32,7 @@
 
 `ArrayBlockingQueue` 内部使用了 `ReentrantLock` 以及两个 `Condition` 来实现。
 
-```java
+```
 /** Main lock guarding all access */
 final ReentrantLock lock;
 /** Condition for waiting takes */
@@ -43,7 +43,7 @@ private final Condition notFull;
 
 `PUT` 方法也很简单，就是 `Condition` 的应用。
 
-```java
+```
 public void put(E e) throws InterruptedException {
     checkNotNull(e);
     final ReentrantLock lock = this.lock;
@@ -60,7 +60,7 @@ public void put(E e) throws InterruptedException {
 ```
 
 `take` 方法也同样的。
-```java
+```
 public E take() throws InterruptedException {
     final ReentrantLock lock = this.lock;
     lock.lockInterruptibly();

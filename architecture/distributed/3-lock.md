@@ -4,7 +4,7 @@
 
 提交数据更新之前，每个事务会先检查在该事务读取数据后，有没有其他事务又修改了该数据。如果其他事务有更新的话，正在提交的事务会进行回滚。
 
-```java
+```
 Connection conn = DriverManager.getConnection(url, user, password);
 conn.setAutoCommit(false);
 Statement stmt = conn.createStatement();

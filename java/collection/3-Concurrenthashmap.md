@@ -14,7 +14,7 @@
 
 将一个HashEntry放入到该`Segment`中，使用自旋机制，减少了加锁的可能性。
 
-```Java
+```
 final V put(K key, int hash, V value, boolean onlyIfAbsent) {
     HashEntry<K,V> node = tryLock() ? null :
         scanAndLockForPut(key, hash, value); //如果加锁失败，则调用该方法
@@ -67,7 +67,7 @@ final V put(K key, int hash, V value, boolean onlyIfAbsent) {
 
 该操作持续查找key对应的节点链中是否已存在该节点，如果没有找到已存在的节点，则预创建一个新节点，并且尝试n次，直到尝试次数超出限制，才真正进入等待状态，即所谓的 **自旋等待**。
 
-```Java
+```
 private HashEntry<K,V> scanAndLockForPut(K key, int hash, V value) {
     //根据hash值找到segment中的HashEntry节点
     HashEntry<K,V> first = entryForHash(this, hash); //首先获取头结点
@@ -108,7 +108,7 @@ private HashEntry<K,V> scanAndLockForPut(K key, int hash, V value) {
 
 用于移除某个节点，返回移除的节点值。
 
-```Java
+```
 final V remove(Object key, int hash, Object value) {
     if (!tryLock())
         scanAndLock(key, hash);
@@ -150,7 +150,7 @@ final V remove(Object key, int hash, Object value) {
 
 要首先对整个`segment`加锁，然后将每一个`HashEntry`都设置为`null`。
 
-```Java
+```
 final void clear() {
     lock();
     try {
@@ -167,7 +167,7 @@ final void clear() {
 
 ### Put
 
-```Java
+```
 public V put(K key, V value) {
     Segment<K,V> s;
     if (value == null)
@@ -184,7 +184,7 @@ public V put(K key, V value) {
 
 ### Get
 
-```Java
+```
 public V get(Object key) {
     Segment<K,V> s;
     HashEntry<K,V>[] tab;
@@ -208,7 +208,7 @@ public V get(Object key) {
 
 求出所有的HashEntry的数目，**先尝试的遍历查找、计算2遍**，如果两遍遍历过程中整个Map没有发生修改（即两次所有Segment实例中modCount值的和一致），则可以认为整个查找、计算过程中Map没有发生改变。否则,需要对所有segment实例进行加锁、计算、解锁，然后返回。
 
-```Java
+```
 public int size() {
 
    final Segment<K,V>[] segments = this.segments;
@@ -259,7 +259,7 @@ public int size() {
 
 ### Put
 
-```java
+```
 final V putVal(K key, V value, boolean onlyIfAbsent) {
     if (key == null || value == null) throw new NullPointerException();
     // 得到 hash 值

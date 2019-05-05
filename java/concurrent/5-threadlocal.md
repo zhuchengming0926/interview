@@ -8,7 +8,7 @@
 
 `ThreadLocalMap` 使用 `ThreadLocal` 的弱引用作为 key ，如果一个 `ThreadLocal` 没有外部强引用来引用它，那么系统 GC 的时候，这个 `ThreadLocal` 势必会被回收，这样一来，`ThreadLocalMap` 中就会出现 `key` 为 `null` 的 `Entry` ，就没有办法访问这些 `key` 为 `null` 的 `Entry` 的 `value`，如果当前线程再迟迟不结束的话，这些 `key` 为 `null` 的 `Entry` 的 `value` 就会一直存在一条强引用链：`Thread Ref -> Thread -> ThreaLocalMap -> Entry -> value` 永远无法回收，造成内存泄漏。
 
-```java
+```
 static class Entry extends WeakReference<ThreadLocal<?>> {
     /** The value associated with this ThreadLocal. */
     Object value;
