@@ -13,20 +13,8 @@ notifications:
     on_success: change
     on_failure: always
 
-before_install:
-  - sudo mkdir -p /usr/share/fonts/opentype/
-  - sudo mv ./guide-book/fonts/AdobeFangsongStd-Regular.otf /usr/share/fonts/opentype/
-  - sudo mv ./guide-book/fonts/AdobeHeitiStd-Regular\ \(v5.010\).otf /usr/share/fonts/opentype/
-  - sudo mv ./guide-book/fonts/AdobeKaitiStd-Regular\ \(v5.010\).otf /usr/share/fonts/opentype/
-  - sudo mv ./guide-book/fonts/AdobeSongStd-Light\ \(v5.010\).otf /usr/share/fonts/opentype/
-  - sudo mkfontscale
-  - sudo mkfontdir
-  - sudo fc-cache -fv
-  - sudo fc-list :lang=zh
-
 install:
   - npm install -g gitbook-cli
-  - npm install -g prismjs
   - gitbook install
 
 script:
