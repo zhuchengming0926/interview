@@ -64,7 +64,7 @@
       "update_format": "YYYY-MM-DD HH:mm:ss"
     },
     "mathjax":{
-      "forceSVG": false
+      "forceSVG": true
     }
   }
 }
