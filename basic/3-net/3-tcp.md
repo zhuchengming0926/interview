@@ -63,6 +63,44 @@
   - 第二次握手：服务器收到syn包，必须确认客户的SYN（ack=j+1），同时自己也发送一个SYN包（syn=k），即SYN+ACK包，此时服务器进入`SYN_RECV`状态；
   - 第三次握手：客户端收到服务器的SYN+ACK包，向服务器发送确认包ACK(ack=k+1），此包发送完毕，客户端和服务器进入`ESTABLISHED`（TCP连接成功）状态，完成三次握手。
 
+### 内核对 TCP 的处理
+
+Socket 是一个由 源IP、源Port、目标IP、目标Port、协议 组成的五元组，唯一标示一个 socket 连接。
+
+TCP 建立连接的整体流程：
+
+  1. 服务器端在调用 `listen` 之后，内核会建立两个队列，`SYN`队列和`ACCEPT`队列，其中`ACCPET`队列的长度由`backlog`指定。
+  2. 服务器端在调用 `accpet` 之后，将阻塞，等待 `ACCPT` 队列有元素。
+  3. 客户端在调用 `connect` 之后，将开始发起 `SYN` 请求，请求与服务器建立连接，此时称为第一次握手。
+  4. 服务器端在接受到 `SYN` 请求之后，把请求方放入 `SYN` 队列中，并给客户端回复一个确认帧 `ACK` ，此帧还会携带一个请求与客户端建立连接的请求标志，也就是 `SYN` ，这称为第二次握手
+  5. 客户端收到 `SYN+ACK` 帧后， `connect` 返回，并发送确认建立连接帧 `ACK` 给服务器端。这称为第三次握手
+  6. 服务器端收到 `ACK` 帧后，会把请求方从 `SYN` 队列中移出，放至 `ACCEPT` 队列中，而 `accept` 函数也等到了自己的资源，从阻塞中唤醒，从 `ACCEPT` 队列中取出请求方，重新建立一个新的 `sockfd` ，并返回。
+
+在服务端如何分发多个连接的请求？
+
+由于 `TCP/IP` 协议栈是维护着一个接收和发送缓冲区的。在接收到来自客户端的数据包后，服务器端的 `TCP/IP` 协议栈应该会做如下处理：
+
+  1. 如果收到的是请求连接的数据包，则传给监听着连接请求端口的 `socetfd` 套接字。
+  2. 如果是已经建立过连接后的客户端数据包，则将数据放入接收缓冲区。这样，当服务器端需要读取指定客户端的数据时，则可以利用 `socketfd_new` 套接字通过 `recv` 或者 `read` 函数到缓冲区里面去取指定的数据（因为 `socketfd_new` 代表的 `socket` 对象记录了客户端IP和端口，因此可以鉴别）。
+
+数据包如何找到相对应的 socket ，这个方法在 Linux Kernel 代码里也是有体现的：
+
+```
+static inline struct sock *__inet_lookup(struct net *net,
+                     struct inet_hashinfo *hashinfo,
+                     const __be32 saddr, const __be16 sport,
+                     const __be32 daddr, const __be16 dport,
+                     const int dif)
+{
+    u16 hnum = ntohs(dport);
+    /* 先尝试查找处于连接成功的socket */
+    struct sock *sk = __inet_lookup_established(net, hashinfo,
+                saddr, sport, daddr, hnum, dif);
+     /* 如果没有找到连接成功的socket，那么就去处于listen状态的socket查找 */
+    return sk ? : __inet_lookup_listener(net, hashinfo, daddr, hnum, dif);
+}
+```
+
 ## 四次挥手
 
 ![](images/tcp_finish.jpg)
