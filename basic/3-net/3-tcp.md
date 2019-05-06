@@ -93,10 +93,10 @@ static inline struct sock *__inet_lookup(struct net *net,
                      const int dif)
 {
     u16 hnum = ntohs(dport);
-    /* 先尝试查找处于连接成功的socket */
+    /* 先尝试查找处于连接成功的 socket */
     struct sock *sk = __inet_lookup_established(net, hashinfo,
                 saddr, sport, daddr, hnum, dif);
-     /* 如果没有找到连接成功的socket，那么就去处于listen状态的socket查找 */
+     /* 如果没有找到连接成功的socket，那么就去处于 listen 状态的 socket 查找 */
     return sk ? : __inet_lookup_listener(net, hashinfo, daddr, hnum, dif);
 }
 ```
@@ -161,7 +161,7 @@ ARQ协议（自动重传请求）是OSI模型中数据链路层和传输层的�
 
 > 如果B发送了一个新的窗口值到A，但是A并没有收到，就会造成死锁。为解决这个问题，TCP为每个链接设置有一个持续计时器。只要TCP收到一个0窗口，就启动计时器。若计时器设置的时间到了，就发送一个探测报文，而接收方在确认的时候会给出一个现在的窗口值。
 
-## TCP拥塞控制。
+## TCP拥塞控制
 
 **防止过多的数据注入到网络中，这样可以使网络中的路由器或链路不致过载**。拥塞控制所要做的都有一个前提：网络能够承受现有的网络负荷。拥塞控制是一个全局性的过程，涉及到所有的主机、路由器，以及与降低网络传输性能有关的所有因素。
 
