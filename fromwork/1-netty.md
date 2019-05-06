@@ -6,6 +6,8 @@ Netty 是一个 异步 事件驱动 的网络应用框架，用于快速开发�
 
 无论是 C++ 还是 Java 编写的网络框架，大多数都是基于 Reactor 模式进行设计和开发，Reactor 模式基于事件驱动，特别适合处理海量的 I/O 事件。
 
+反应器设计模式(`Reactor pattern`)是一种为处理服务请求并发 提交到一个或者多个服务处理程序的事件设计模式。当请求抵达后，服务处理程序使用解多路分配策略，然后同步地派发这些请求至相关的请求处理程序。
+
 ### 单线程模型
 
 Reactor 单线程模型，指的是所有的 IO 操作都在同一个 NIO 线程上面完成，NIO 线程的职责如下：
@@ -84,6 +86,11 @@ Netty 的 Zero-copy 体现在如下几个个方面:
 ### Netty 启动以及链接建立过程
 
 ![image](images/922e67970b6ac7bf78cd43ac61f7aec0.png)
+
+## Epool 触发
+
+  - `NioChannel`：是水平触发
+  - `EpollChannel`：是边缘触发，Netty 自己触发 Epoll Event
 
 ## [JDK NIO BUG](https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6403933)
 

@@ -1,6 +1,6 @@
 # 最短路径算法
 
-## Dijkstra——贪心算法
+## Dijkstra —— 贪心算法
 
 > 从一个顶点到其余顶点的最短路径
 
@@ -15,6 +15,31 @@
 4. 重复以上步骤知道S包含所有顶点。
 ```
 
-## Floyd——动态规划
+## Floyd —— 动态规划
 
-> 每对顶点之间的最短路径
+Floyd 算法是解决任意两点间的最短路径的一种算法，可以正确处理有向图或负权（但不可存在负权回路）的最短路径问题。该算法的时间复杂度为 $$O(N^{3})$$，空间复杂度为 $$O(N^{2})$$
+
+设 $$D_{i,j,k}$$ 为从 $$i$$ 到 $$j$$ 的只以 $$(1..k)$$ 集合中的节点为中间节点的最短路径的长度。
+
+$$
+D_{i,j,k}=\begin{cases}
+D_{i,j,k-1} & 最短路径不经过 k\\
+D_{i,k,k-1}+D_{k,j,k-1} & 最短路径经过 k
+\end{cases}
+$$
+
+因此， $$D_{i,j,k}=min(D_{i,k,k-1}+D_{k,j,k-1},D_{i,j,k-1})$$。伪代码描述如下：
+
+```
+// let dist be a |V| × |V| array of minimum distances initialized to ∞ (infinity)
+ for each vertex v
+    dist[v][v] ← 0
+ for each edge (u,v)
+    dist[u][v] ← w(u,v)  // the weight of the edge (u,v)
+ for k from 1 to |V|
+    for i from 1 to |V|
+       for j from 1 to |V|
+          if dist[i][j] > dist[i][k] + dist[k][j]
+             dist[i][j] ← dist[i][k] + dist[k][j]
+         end if
+```
