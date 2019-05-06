@@ -40,6 +40,7 @@ static final int hash(Object key) {
 ![](images/2-HashMap-7bdc9.png)
 
 因此元素在重新计算hash之后，因为n变为2倍，那么n-1的mask范围在高位多1bit(红色)，因此新的index就会发生这样的变化：
+
 ![](images/2-HashMap-03719.png)
 
 因此，我们在扩充HashMap的时候，不需要重新计算hash，只需要看看原来的hash值新增的那个bit是1还是0就好了，是0的话索引没变，是1的话索引变成“`原索引+oldCap`”。可以看看下图为16扩充为32的resize示意图：

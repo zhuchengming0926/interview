@@ -81,4 +81,3 @@
         return new String(value, 0, count);
     }
 ```
-基于内部数组新建了一个String，注意，**这个String构造方法不会直接用value数组，而会新建一个，以保证String的不可变性**。
